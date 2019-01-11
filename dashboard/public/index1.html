@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Dashboard</title>
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  </head>
+
+  <body onload="loadData()">
+    <div id="data"></div>
+
+    <input type="radio" name="data-type" value="NGRID" checked>
+    <label>NGRID &emsp;</label>
+    <input type="radio" name="data-type" value="HVS">
+    <label>HVS </label>
+
+    <script>
+      $("input[type=radio][name='data-type']").change(loadData);
+
+      function loadData() {
+        var url = "/hourStat"; 
+        var feedtype = $("input[name='data-type']:checked").val();
+        var testData = "hostname=uva&feedtype=" + feedtype;
+        $.ajax({
+          type: 'Get',
+          url: url ,
+          data: testData ,
+          success: function(data) {
+            $("#data").html(JSON.stringify(data));
+          } ,
+          error: function() {
+            alert("something bad happened");
+          }
+        });
+      }
+
+    </script>
+  </body>
+</html>
