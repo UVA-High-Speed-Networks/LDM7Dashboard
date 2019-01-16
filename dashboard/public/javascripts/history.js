@@ -4,19 +4,18 @@ const currURLsize = currURL.split('/').length;
 const feedtype = currURL.split('/')[currURLsize-4];
 const hostname = currURL.split('/')[currURLsize-3];
 const datatype = currURL.split('/')[currURLsize-2];
-console.log(datatype);
 
-var dataURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime=2019-01-08T12:00:00.000Z&endTime=2019-01-08T15:00:00.000Z";
+var initEndTime = new Date();
+var initStartTime = d3.time.hour.offset(initEndTime, -3);
+var dataURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+initStartTime+"&endTime="+initEndTime;
 // var dataURL = "/hostData?hostname=uva&feedtype=NGRID&datatype=throughput";
 d3.json(dataURL, function(data) {
-    console.log(data);
     const dateExtent = [data.earliest, data.latest];
-    console.log(dateExtent);
     drawScalable(data.data, dateExtent);
 });
 
 function drawScalable(data, dateExtent) {
-    // var ms = new Date(dateExtent[1]).getTime() - new Date(dateExtent[0]).getTime();
+
     var zoom = d3.zoom()
                 // .scaleExtent(extent)
                 // .scaleExtent([1, 32])
@@ -32,8 +31,6 @@ function drawScalable(data, dateExtent) {
     width = 1000 - padding.left - padding.right,
     height = 400 - padding.top - padding.bottom;
 
-    // var startTime = new Date("2019-01-08T09:00:00.000Z");
-    // var endTime = new Date("2019-01-08T14:00:00.000Z");
     // Linear Scales
     var xScale = d3.time.scale()
         .domain(d3.extent(data, function(d) { // input
@@ -63,6 +60,16 @@ function drawScalable(data, dateExtent) {
         .attr("class", "x-axis-label")
         .style("text-anchor", "end")
         .text("Time");
+    
+    var units = datatype === "throughput" ? "bps" : "%";
+      
+    // text label for the y-axis
+    chart.append("text")
+        .attr("x", padding.left)
+        .attr("y",  padding.top / 2)
+        .attr("class", "y-axis-label")
+        .style("text-anchor", "middle")
+        .text(units);
 
     var plotLine = d3.line()
         // .curve(d3.curveMonotoneX)
@@ -103,7 +110,6 @@ function drawScalable(data, dateExtent) {
     function zoomed() {
         // Update x Scale
         let new_xScale = d3.event.transform.rescaleX(xScale);
-        // let new_yScale = d3.event.transform.rescaleY(yScale);
 
         chart.select(".x.axis").transition()
             .duration(50)
@@ -117,62 +123,38 @@ function drawScalable(data, dateExtent) {
             })
             .y(function (d) {
                 return yScale(d.data); 
-                // return new_yScale(d.data);
             });
 
         line.attr("d", plotLine);
 
-        // xScale = new_xScale;
     }
 
-    /****************** Update Data Below *******************************/
-    // d3.select("#update").on('click', update);
+    /****************** Update After Zoom *******************************/
 
     function update() {
         var startTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[0].toISOString();
         var endTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[1].toISOString();
-        // var startTime = d3.extent(xAxis.scale())[0].toISOString();
-        // var endTime = d3.extent(xAxis.scale())[1].toISOString();
-        console.log(startTime, endTime);
-        // console.log(d3.extent(xAxis.scale()[0]));
+
         var updateURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+startTime+"&endTime="+endTime;
         d3.json(updateURL, function(rowData) {
             const dateExtent = [data.earliest, data.latest];
-            console.log(dateExtent);
 
             // re-draw line
             data = rowData.data;
-            console.log(data);
-            console.log(new Date(data[0].time));
-            console.log(d3.extent(data, d => new Date(d.time)));
-            // let new_xScale = d3.time.scale()
-            //     .domain(d3.extent(data, function(d) { // input
-            //         return new Date(d.time);
-            //     }))
-            //     .range([0, width]) // view
-            //     .nice();
+            // console.log(data);
+            // console.log(new Date(data[0].time));
+            // console.log(d3.extent(data, d => new Date(d.time)));
             xScale = d3.time.scale()
                 .domain(d3.extent(data, function(d) { // input
                     return new Date(d.time);
                 }))
                 .range([0, width]); // view
                 // .nice();
-
-            // console.log(new_xScale(new Date("2019-01-08T04:00:00.000Z")));
-            // console.log(new_xScale(new Date("2019-01-08T03:00:00.000Z")));
-            console.log(xScale(new Date("2019-01-08T04:00:00.000Z")));
             
-            // let new_yScale = d3.scaleLinear()
-            //     .domain([0, d3.max(data, d => d.data)])
-            //     .range([height, 0])
-            //     .nice();
             yScale = d3.scaleLinear()
                 .domain([0, d3.max(data, d => d.data)])
                 .range([height, 0]);
                 // .nice();
-
-            // xAxis.scale(xScale);
-            // yAxis.scale(yScale);
 
             chart.select(".x.axis")
                 .transition()
@@ -189,123 +171,68 @@ function drawScalable(data, dateExtent) {
             plotLine = d3.line()
                 // .curve(d3.curveMonotoneX)
                 .x(function (d) { 
-                    // console.log(new Date(d.time));
-                    // console.log(xScale(new Date(d.time)));
-                    // return new_xScale(new Date(d.time));})
                     return xScale(new Date(d.time));})
                 // .y(function (d) { return new_yScale(d.data); });
                 .y(function (d) { return yScale(d.data); });
             
-            // chart.call(xAxis)
-            //     .call(yAxis);
-
             line.datum(data)
                 .attr("d", plotLine);
 
-            // xScale = new_xScale;
-            // yScale = new_yScale;
-
             chart.call(zoom);
         });
-        // data = randomData(50);
-
-        // xScale.domain(d3.extent(data, function(d) {
-        // return new Date(d.time);
-        // })).nice();
-        
-        // yScale.domain(d3.extent(data, function(d) {
-        // return d.data;
-        // })).nice();
-
-        // line.datum(data)
-        // .transition().duration(750)
-        // .attr("d", plotLine)
-        // .style("fill", "none")
-        // .style("stroke-width", "2px")
-        // .style("stroke", "brown");
     }
 
     /****************** Periodically Update Below **************************/
 
-    // // Data Update
-    // var inter = setInterval(function() {
-    //   // updateData();
-    //   console.log("updated");
-    //   var time = new Date();
-    //   console.log(time.getHours() + ":" + time.getMinutes() + ":" + time.getMinutes());
-    //   updateData();
-    //   // updateMap();
-    // }, 5 * 60 * 1000);
-      
-    // function updateData() {
-    //   d3.json("/hourStat?hostname=uva&feedtype=NGRID", function(error, data) {
-    //     // Scale the range of the data again 
-    //     drawMap(geoData, hosts, data, currentDataType);
-    //     console.log("Map refreshed");
-    //     var active = d3.select(".activeHost").data()[0];
-    //     var host = active ? active.name : "";
-    //     drawLine(data, host, currentDataType);
-    //   });
-    // }
-// }
+    // Data Update
+    var inter = setInterval(function() {
+      var time = new Date();
+      console.log("Updated: " + time.getHours() + ":" + time.getMinutes() + ":" + time.getMinutes());
+
+      var startTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[0].toISOString();
+      var endTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[1].toISOString();
+      if (time.getTime() - new Date(endTime).getTime() < 5 * 60 * 1000) {
+          endTime = time.toLocaleString();
+      }
+      updateData(startTime, endTime);
+    }, 0.5 * 60 * 1000);
 
 
     d3.selectAll('.choices')
         .on("click", () => {
             var range = d3.event.target.id;
-            console.log(range);
-            reset(range);
+            endTime = new Date();
+
+            if (range === "30min") {
+                var startTime = d3.time.minute.offset(endTime, -30);
+            } else if (range === "1h") {
+                var startTime = d3.time.hour.offset(endTime, -1);
+            } else if (range === "6h") {
+                var startTime = d3.time.hour.offset(endTime, -6);
+            } else if (range === "1d") {
+                var startTime = d3.time.day.offset(endTime, -1);
+            } else if (range === "1w") {
+                var startTime = d3.time.day.offset(endTime, -7);
+            } else if (range === "1m") {
+                var startTime = d3.time.month.offset(endTime, -1);
+            } else if (range === "3m") {
+                var startTime = d3.time.month.offset(endTime, -3);
+            } else {
+                var startTime = d3.time.hour.offset(endTime, -6);
+            }
+
+            updateData(startTime, endTime);
         });
 
-    function reset(range) {
-        // chart.transition()
-        //     .duration(750);
-            // .call(zoom.transform, d3.zoomIdentity);
-
-        var endTime = new Date("2019-01-08T14:06:00.000Z");
-        if (range === "30min") {
-            var startTime = d3.time.minute.offset(endTime, -30);
-        } else if (range === "1h") {
-            var startTime = d3.time.hour.offset(endTime, -1);
-        } else if (range === "6h") {
-            var startTime = d3.time.hour.offset(endTime, -6);
-        } else if (range === "1d") {
-            var startTime = d3.time.day.offset(endTime, -1);
-        } else if (range === "1w") {
-            var startTime = d3.time.day.offset(endTime, -7);
-        } else if (range === "1m") {
-            var startTime = d3.time.month.offset(endTime, -1);
-        } else if (range === "3m") {
-            var startTime = d3.time.month.offset(endTime, -3);
-        } else {
-            var startTime = d3.time.hour.offset(endTime, -6);
-        }
-
-        console.log(startTime, endTime);
+    function updateData(startTime, endTime) {
         var updateURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+startTime+"&endTime="+endTime;
         d3.json(updateURL, function(rowData) {
-        //     const dateExtent = [data.earliest, data.latest];
-        //     console.log(dateExtent);
 
-        //     d3.select(".line").remove();
-        //     d3.select(".x.axis").remove();
-        //     d3.select(".y.axis").remove();
-        //     drawScalable(data.data, dateExtent);
-        // });
         const dateExtent = [data.earliest, data.latest];
-            console.log(dateExtent);
 
             // re-draw line
             data = rowData.data;
-            console.log(data);
-            console.log(new Date(data[0].time));
-            console.log(d3.extent(data, d => new Date(d.time)));
-            // let new_xScale = d3.time.scale()
-            //     .domain(d3.extent(data, function(d) { // input
-            //         return new Date(d.time);
-            //     }))
-            //     .range([0, width]) // view
-            //     .nice();
+
             xScale = d3.time.scale()
                 .domain(d3.extent(data, function(d) { // input
                     return new Date(d.time);
@@ -313,21 +240,10 @@ function drawScalable(data, dateExtent) {
                 .range([0, width]); // view
                 // .nice();
 
-            // console.log(new_xScale(new Date("2019-01-08T04:00:00.000Z")));
-            // console.log(new_xScale(new Date("2019-01-08T03:00:00.000Z")));
-            console.log(xScale(new Date("2019-01-08T04:00:00.000Z")));
-            
-            // let new_yScale = d3.scaleLinear()
-            //     .domain([0, d3.max(data, d => d.data)])
-            //     .range([height, 0])
-            //     .nice();
             yScale = d3.scaleLinear()
                 .domain([0, d3.max(data, d => d.data)])
                 .range([height, 0]);
                 // .nice();
-
-            // xAxis.scale(xScale);
-            // yAxis.scale(yScale);
 
             chart.select(".x.axis")
                 .transition()
@@ -344,23 +260,32 @@ function drawScalable(data, dateExtent) {
             plotLine = d3.line()
                 // .curve(d3.curveMonotoneX)
                 .x(function (d) { 
-                    // console.log(new Date(d.time));
-                    // console.log(xScale(new Date(d.time)));
-                    // return new_xScale(new Date(d.time));})
                     return xScale(new Date(d.time));})
-                // .y(function (d) { return new_yScale(d.data); });
                 .y(function (d) { return yScale(d.data); });
             
-            // chart.call(xAxis)
-            //     .call(yAxis);
 
             line.datum(data)
                 .attr("d", plotLine);
 
-            // xScale = new_xScale;
-            // yScale = new_yScale;
-
             chart.call(zoom);
         });
+    }
+}
+
+// update the title
+document
+    .getElementById("title")
+    .innerHTML 
+    = formatDataType(datatype)
+    + " from UCAR to " + hostname.toUpperCase();
+
+
+function formatDataType(key) {
+    if (key === "ffdrProd") {
+      return "FFDR of Product";
+    } else if (key === "ffdrSize") {
+      return "FFDR of Size";
+    } else {
+      return key[0].toUpperCase() + key.slice(1).replace(/[A-Z]/g, c => " " + c);
     }
 }

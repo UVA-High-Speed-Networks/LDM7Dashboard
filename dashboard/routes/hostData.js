@@ -9,7 +9,7 @@ router.get("/", function(req, res){
   var startTime = new Date(req.query.startTime);
   var endTime = new Date(req.query.endTime);
 
-  console.log(startTime);
+  // console.log(startTime);
   // var hostname = "uva";
   // var feedtype = "NGRID";
   // var datatype = "throughput";
@@ -23,7 +23,7 @@ router.get("/", function(req, res){
   } else if (datatype == "ffdrProd") {
     var dataReq = ["receivedProd", "completeProd"];
   } else {
-    console.log("DataType not available");
+    // console.log("DataType not available");
   }
 
   Promise.all([
@@ -43,10 +43,10 @@ router.get("/", function(req, res){
         $lte: endTime
       }})
     ]).then( ([ earliest, latest, allData]) => {
-      console.log("hostData.js triggered");
-      console.log(earliest);
-      console.log(endTime);
-      if ((endTime.getTime() - startTime.getTime()) < (1000*60*60*24)) {
+      // console.log("hostData.js triggered");
+      // console.log(earliest);
+      // console.log(endTime);
+      if ((endTime.getTime() - startTime.getTime()) < (1000*60*60*8)) {
         var hostData = [];
         for (var i = 0; i < allData.length; i++) {
           var line = {
@@ -55,14 +55,14 @@ router.get("/", function(req, res){
           }
           hostData.push(line);
         }
-        console.log(hostData.length);
+        // console.log(hostData.length);
         // res.send(dataArr);
       } else {
         var dataArr = [];
         for (var i = 0; i < allData.length; i++) {
           // parse
           var hourTime = allData[i].date;
-          hourTime.setMinutes(0);
+          hourTime.setMinutes(0, 0);
           var line = {
             time: hourTime,
             numerator: allData[i][dataReq[0]],

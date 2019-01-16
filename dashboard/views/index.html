@@ -139,7 +139,7 @@
                             <li class="nav-item active">
                                 <a href="./index" class="nav-link">Dashboard</a>
                             </li>
-                            <li class="nav-item dropdown">
+                            <!-- <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Mesh Dash &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 </a>
@@ -147,7 +147,7 @@
                                     <a href="#" class="dropdown-item">Products</a>
                                     <a href="#" class="dropdown-item">Throughput</a>
                                 </div>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
                                 <a href="https://pages.shanti.virginia.edu/ANS_Community/" class="nav-link">Community</a>
                             </li>
@@ -160,7 +160,15 @@
             </nav>
 
             <div class="container" ng-app="">
-                <div class="container-fluid" style="width: 50%; float: right; text-align: right" >
+                <div class="container-fluid" style="width: 50%; float: right; text-align: right">
+                    <p>
+                        Feed Type:
+                        <select id="feedtype">
+                            <option value="NGRID" selected="selected">NGRID</option>
+                            <option value=" ">OTHERS</option>
+                        </select>
+                    </p>
+                    
                     <p>
                         <!-- Choose throughput or received products. -->
                         <input type="radio" name="data-type" value="throughput" checked>
@@ -171,10 +179,9 @@
                         <span>ffdrProd </span>
                     </p>
                 </div>
-                <h2>Overview</h2> <span>Current Date: <span id="date-val"></span></span>
 
-                <p></p>
-                <!-- <div ng-include="'topodash.htm'"></div> -->
+                <h2>Overwiew</h2>
+                <p id="currDate"></p>
                 <div class="chart-container">
                     <svg 
                         version="1.1"
@@ -185,7 +192,7 @@
                 </div>
 
                 <div class="container-fluid" style="float: right; text-align: right" >
-                    <span style="color: red"> ● </span>
+                    <span style="color: brown"> ● </span>
                     <span> Corrupted Hosts</span>
                 </div>
 
@@ -205,23 +212,13 @@
                     </svg>
                     
                     <div style="text-align:right">
-                        <!-- <button type="button" id="scalable">longer</button> -->
-                        <!-- <a href="./history" id="custom" class="btn btn-dark"> Custom </a> -->
                         <button onclick="custom()" class="btn btn-dark"> Custom </button>
                         <!-- <input type="submit" value="custom" id="custom"/> -->
                     </div>
-                    
                 </div>
 
                 <div class="tooltip"></div>
-
-                <!-- <div class="line"></div>
-                    <div ng-include="'throughput.htm'"></div>
-                <div class="line"></div> -->
-
-
             </div>
-            
         </div>
     </div>
 

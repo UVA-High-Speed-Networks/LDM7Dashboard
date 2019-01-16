@@ -10,12 +10,14 @@ function createLine(width, height) {
            .classed("y-axis-line", true);
 }
 
-function drawLine(data, host, dataType) {
-  if (host == "") {
-    console.log("no host");
-    return;
+// function drawLine(data, host, dataType) {
+function drawLine(data, feedType, host, dataType) {
+  if (host === null || host === "" || data === null || data.length === 0) {
+    host = "";
+    data = [];
+    console.log("No data or no host selected.");
   }
-  
+
   var linechart = d3.select("#line-chart");
   var padding = {
     top: 30,
@@ -26,49 +28,43 @@ function drawLine(data, host, dataType) {
   var width = +linechart.attr("width");
   var height = +linechart.attr("height");
 
-  console.log(data);
-  // console.log(linechart);
+  var hostData = data.filter(d => d.hostname === host && d.feedtype === feedType);
 
-  var hostData = data.filter(d => d.hostname === host);
-
-  var currTime = new Date("2019-01-08T14:00:00.000Z");
-  var oneHoursAgo = d3.time.hour.offset(currTime, -1);
-  // console.log(oneHoursAgo.getTime());
+  var currTime = new Date();
+  // var currTime = new Date("2019-01-15T02:48:01Z");
+  var oneHoursAgo = d3.time.hour.offset(currTime.setSeconds(0), -1);
 
   var hostHourData = [];
   for (var i = 0; i < 60; i++) {
     var d = d3.time.minute.offset(oneHoursAgo, i);
     hostHourData.push({"time": d});
-    // console.log(d.getTime());
   }
-  // console.log(hostHourData);
   
   hostHourData.map(function (row) {
     var minuteData = hostData.find(function (item) {
-      return row.time.getTime() === new Date(item.time).getTime();
+      var timeCal = new Date(item.time).getTime();
+      return ((row.time.getTime() - timeCal < 60 * 1000) && (row.time.getTime() - timeCal > 0));
     });
 
     if (minuteData) {
-      // console.log("success");
       row.throughput = minuteData.throughput;
       row.ffdrSize = minuteData.ffdrSize;
       row.ffdrProd = minuteData.ffdrProd;
     } else {
-      // console.log("fail");
       row.throughput = 0;
       row.ffdrSize = 0;
       row.ffdrProd = 0;
     }
     return row;
   });
-  console.log(hostHourData);
+
 
 // #################################
 // ### chart drawing below
 // #################################
 
   var xScale = d3.time.scale()
-                .domain(d3.extent(hostHourData, d => d.time)) // (data.map(parseData, d => d.hour)) 
+                .domain(d3.extent(hostHourData, d => d.time))
                 .range([padding.left, width - padding.right]);
                 //  .rangeRound([0, width]);
                 //  .ticks(d3.time.minute, 15);
@@ -76,7 +72,6 @@ function drawLine(data, host, dataType) {
   var yScale = d3.scaleLinear()
                  .domain([0, d3.max(hostHourData, d => d[dataType])])
                  .range([height - padding.bottom, padding.top]);
-  // console.log(hostHourData[55][dataType]);
 
   var xAxis = d3.axisBottom(xScale)
                 // .ticks(d3.time.minute, 15);
@@ -106,26 +101,30 @@ function drawLine(data, host, dataType) {
             .duration(1000);
             // .ease(d3.easeBounceOut);
 
-  // line update
+  // line generator
   var line = d3.line()
               .x(function(d) { return xScale(d.time); })
               .y(function(d) { return yScale(d[dataType]); });
               // .curve(d3.curveMonotoneX);
 
-  d3.selectAll(".line")
-      .style("opacity", 1.0)
-      .transition(t)
-        .delay(600)
-      .style("opacity", 0.0)
-      .remove();
+  var lines = linechart.selectAll(".line")
+          .data([hostHourData]);
 
-  linechart.append("path")
-          .datum(hostHourData)
+  lines.exit()
+    .style("opacity", 1.0)
+    .transition(t)
+      .delay(800)
+    .style("opacity", 0.0)
+    .remove();
+
+  lines.enter()
+          .append("path")
           .classed("line", true)
-          .attr("d", line) 
+          .merge(lines)
+          .attr("d", line)
           .style("opacity", 0.0)
           .transition(t)
-            .delay(600)
+            .delay(800)
           .style("opacity", 1.0);
 
   // dots update
@@ -158,7 +157,7 @@ function drawLine(data, host, dataType) {
   linechart.append("text")      
         .attr("x", width)
         .attr("y",  height - padding.top + 10)
-        .attr("class", "x-axis-label")
+        .attr("class", "x-axis-label label")
         .style("text-anchor", "end")
         .text("Time");
 
@@ -174,7 +173,7 @@ function drawLine(data, host, dataType) {
   linechart.append("text")
         .attr("x", padding.left)
         .attr("y",  padding.top / 2)
-        .attr("class", "y-axis-label")
+        .attr("class", "y-axis-label label")
         // .attr("transform", "rotate(-90)")
         .style("text-anchor", "middle")
         .style("opacity", 0.0)

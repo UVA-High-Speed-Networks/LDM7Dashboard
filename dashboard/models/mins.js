@@ -13,7 +13,7 @@ var minsSchema = new mongoose.Schema({
     feedtype: String,
     hostname: String
     },
-    { collection : 'testDash' }
+    { collection : 'test' }
 );
 
 // Export model.
