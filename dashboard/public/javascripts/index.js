@@ -19,7 +19,8 @@ d3.queue()
     var height = 350;
 
     createMap(width, width * 3 / 5);
-    createLine(width, height);
+    // createLine(width, height);
+    createBar(width, height);
     drawMap(geoData, hosts, data, currFeedType, currentDataType);
 
     d3.select("#feedtype")
@@ -29,7 +30,8 @@ d3.queue()
           var host = active ? active.name : "";
           drawMap(geoData, hosts, data, currFeedType, currentDataType);
           if (host !== "") {
-            drawLine(data, currFeedType, host, currentDataType);
+            // drawLine(data, currFeedType, host, currentDataType);
+            drawBar(data, currFeedType, host, currentDataType);
           }
         });
 
@@ -40,8 +42,9 @@ d3.queue()
           currentDataType = d3.event.target.value;
           drawMap(geoData, hosts, data, currFeedType, currentDataType);
           if (host !== "") {
-	    drawLine(data, currFeedType, host, currentDataType);
-	  }
+            // drawLine(data, currFeedType, host, currentDataType);
+            drawBar(data, currFeedType, host, currentDataType);
+          }
         });
     
     var inter = setInterval(function() {
@@ -58,7 +61,8 @@ d3.queue()
         var active = d3.select(".activeHost").data()[0];
         var host = active ? active.name : "";
         drawMap(geoData, hosts, data, currFeedType, currentDataType);
-        drawLine(data, currFeedType, host, currentDataType);
+        // drawLine(data, currFeedType, host, currentDataType);
+        drawBar(data, currFeedType, host, currentDataType);
       });
     }
 
@@ -72,13 +76,14 @@ d3.queue()
       var tgt = d3.select(d3.event.target);
       var isLink = tgt.classed("link");
       var isNode = tgt.classed("node");
-      var isDot = tgt.classed("dot");
+      var isBar = tgt.classed("bar");
+      // var isDot = tgt.classed("dot");
       var dataType = d3.select("input:checked")
                        .property("value");
       var hostName = d3.selectAll(".link");
       var units = dataType === "throughput" ? "bps" : "%";
       tooltip
-          .style("opacity", +(isLink || isNode || isDot))
+          .style("opacity", +(isLink || isNode || isBar))
           .style("left", (d3.event.pageX - tooltip.node().offsetWidth / 2 - 20) + "px")
           .style("top", (d3.event.pageY - tooltip.node().offsetHeight - 25) + "px");
 
@@ -87,8 +92,8 @@ d3.queue()
         if (data) {
           var hostName = data["name"] ? data["name"].toLocaleString() : "";
           tooltip.html(
-                    ` <p>Host: ${hostName.toUpperCase()}</p>
-                      <p>Status: ${hostStatus(data)}</p>
+                    ` <p>Name: ${hostName.toUpperCase()}</p>
+                      <p>${hostStatus(data)}</p>
                     `)
         }
       }
@@ -113,14 +118,13 @@ d3.queue()
                     `)
         }
       }
-      if (isDot) {
+      if (isBar) {
         var data = tgt.data()[0];
         if (data) {
-          var hostName = data["name"] ? data["name"].toLocaleString() : "";
+          // var hostName = data["name"] ? data["name"].toLocaleString() : "";
           var dataValue = data[dataType] ?
                           data[dataType].toLocaleString() + " " + units :
                           "Data Not Available";
-          // console.log(dataType);
           tooltip.html(
                     ` <p>Time: ${formatDate(data["time"])}</p>
                       <p>${formatDataType(dataType)}: ${dataValue}</p>
@@ -158,10 +162,8 @@ function formatDataType(key) {
 }
 
 function hostStatus(hostData) {
-  if (hostData["name"] == "ucar") return "Origin";
-  if (hostData["ffdrSize"] != 0) return "Active Receiving";
-  else return "Corrupted Receiving";
-  console.log(hostData);
+  if (hostData["name"] == "ucar") return "Sending Host";
+  else return "Receiving Host";
 }
 
 function custom() {

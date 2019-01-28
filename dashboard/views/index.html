@@ -182,7 +182,7 @@
 
                 <h2>Overwiew</h2>
                 <p id="currDate"></p>
-                <div class="chart-container">
+                <div class="chart-container" style="align-content: center">
                     <svg 
                         version="1.1"
                         baseProfile="full"
@@ -191,9 +191,11 @@
                     </svg>
                 </div>
 
-                <div class="container-fluid" style="float: right; text-align: right" >
+                <div style="width: 160px; float: right; text-align: left;" >
+                    <span style="color: darkkhaki"> ● </span>
+                    <span> Less Active Hosts</span> <br/>
                     <span style="color: brown"> ● </span>
-                    <span> Corrupted Hosts</span>
+                    <span> Unavailable Hosts</span>
                 </div>
 
                 <div class="dividing-line"></div>
@@ -208,11 +210,17 @@
                         version="1.1"
                         baseProfile="full"
                         xmlns="http://www.w3.org/2000/svg" 
-                        id="line-chart">
+                        id="bar-chart">
                     </svg>
+                    <!-- <svg 
+                        version="1.1"
+                        baseProfile="full"
+                        xmlns="http://www.w3.org/2000/svg" 
+                        id="line-chart">
+                    </svg> -->
                     
                     <div style="text-align:right">
-                        <button onclick="custom()" class="btn btn-dark"> Custom </button>
+                        <button onclick="custom()" id="custombtn" class="btn btn-dark"> Custom </button>
                         <!-- <input type="submit" value="custom" id="custom"/> -->
                     </div>
                 </div>
@@ -243,10 +251,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
     <!-- self-defined js files -->
-    <script src="javascripts/line.js"></script>
-    <script src="javascripts/bar.js"></script>
-    <script src="javascripts/map.js"></script>
     <script src="javascripts/index.js"></script>
+    <script src="javascripts/map.js"></script>
+    <script src="javascripts/bar.js"></script>
+    <!-- <script src="javascripts/line.js"></script> -->
 
     <script type="text/javascript">
         $(document).ready(function () {
