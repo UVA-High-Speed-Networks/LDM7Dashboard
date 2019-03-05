@@ -9,152 +9,129 @@
     <title>ANS Dashboard</title>
 
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="../../../stylesheets/style.css">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
     <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-    
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+
     <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
     <style type="text/css">
         .area {
-        fill: steelblue;
-        clip-path: url(#clip);
+            fill: steelblue;
+            clip-path: url(#clip);
         }
+
         .zoom {
-        cursor: move;
-        fill: none;
-        pointer-events: all;
+            cursor: move;
+            fill: none;
+            pointer-events: all;
         }
     </style>
 </head>
 
 <body>
+    <!-- Page Content  -->
+    <div id="content">
 
-    <div class="wrapper">
-        <!-- Sidebar  -->
-        <nav id="sidebar">
-            <div id="dismiss">
-                <i class="fas fa-arrow-left"></i>
-            </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky">
+            <div class="container-fluid">
 
-            <div class="sidebar-header">
-                <h3>ANS</h3>
-            </div>
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-align-left"></i>
+                    <span></span>
+                </button>
 
-            <ul class="list-unstyled components">
-                <p>Dashboard</p>
-                <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Home</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="#">Home 1</a>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./../../../">&nbsp; ANS Community</a>
+                </div>
+
+                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <i class="fas fa-align-justify"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a href="./../../../" class="nav-link">Dashboard</a>
                         </li>
-                        <li>
-                            <a href="#">Home 2</a>
+                        <li class="nav-item">
+                            <a href="https://pages.shanti.virginia.edu/ANS_Community/" class="nav-link">Community</a>
                         </li>
-                        <li>
-                            <a href="#">Home 3</a>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">About</a>
                         </li>
                     </ul>
-                </li>
-                <li>
-                    <a href="#">Mesh</a>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Features</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a href="latency.html">Latency</a>
-                        </li>
-                        <li>
-                            <a href="products.html">Products Received</a>
-                        </li>
-                        <li>
-                            <a href="#">Page 3</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-            </ul>
-
-            <ul class="list-unstyled CTAs">
-                <li>
-                    <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
-                </li>
-                <li>
-                    <a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a>
-                </li>
-            </ul>
+                </div>
+            </div>
         </nav>
 
-        <!-- Page Content  -->
-        <div id="content">
-
-            <nav class="navbar navbar-expand-lg navbar-light bg-light sticky">
-                <div class="container-fluid">
-        
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span></span>
-                    </button>
-        
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="./../../../">&nbsp;  ANS Community</a>
-                    </div>
-        
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button>
-        
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item active">
-                                <a href="./../../../" class="nav-link">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://pages.shanti.virginia.edu/ANS_Community/" class="nav-link">Community</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">About</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-
-            <div class="container">
-                <h2 style="text-align:center; padding: 2%" id="title"></h2>
-                <div class="container-fluid" style="float: right; text-align: right">
-                   <!-- <div class="col-md-24"> -->
-                        <span>Time Range:</span> &nbsp
-                        <span id="30min" class="choices">30min</span>
-                        <span id="1h" class="choices">1h</span>
-                        <span id="6h" class="choices">6h</span>
-                        <span id="1d" class="choices">1day</span>
-                        <span id="1w" class="choices">1week</span>
-                        <span id="1m" class="choices">1month</span>
-                        <span id="3m" class="choices">3months</span>
-                   <!-- </div>  -->
-                </div>
-                <svg 
-                    version="1.1"
-                    baseProfile="full"
-                    xmlns="http://www.w3.org/2000/svg" 
-                    id="scalable-chart"
-                    width = "1000"
-                    height = "500">
-                </svg>
+        <div class="container">
+            <h2 style="text-align:center; padding: 2%" id="title"></h2>
+            <!-- <span>Data Available from </span>
+            <span id="availableDataRange"></span> -->
+            <div class="container-fluid" style="float: right; text-align: right">
+                <!-- <div class="col-md-24"> -->
+                <span>Time Range:</span> &nbsp
+                <span id="30min" class="choices">30min</span>
+                <span id="1h" class="choices">1h</span>
+                <span id="6h" class="choices">6h</span>
+                <span id="1d" class="choices">1day</span>
+                <span id="1w" class="choices">1week</span>
+                <span id="1mon" class="choices">1month</span>
+                <span id="3mon" class="choices">3months</span> 
+                <span id="custom" class="choices">custom</span>
+                <br/>
+                <table id="customTable" style="float:right" hidden>
+                    <tr>
+                        <td>
+                            <span style="color:brown" id="startWarning"></span>
+                        </td>
+                        <td>
+                            Start Time:
+                        </td>
+                        <td>
+                            <input class="customInput" type="date" id="startDate" value="" style="width:fit-content;" />
+                        </td>
+                        <td>
+                            <input class="customInput" type="time" id="startTime" value="" style="width:fit-content;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="color:brown" id="endWarning"></span>
+                        </td>
+                        <td>
+                            End Time:
+                        </td>
+                        <td>
+                            <input class="customInput" type="date" id="endDate" value="" style="width:fit-content;" />
+                        </td>
+                        <td>
+                            <input class="customInput" type="time" id="endTime" value="" style="width:fit-content;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td>
+                        <td><button class="btn-dark" id="hide">Hide</button></td>
+                        <td><button class="btn-dark" id="enter">Search</button></td></tr>
+                </table>
             </div>
-            
+            <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" id="scalable-chart" width="1000"
+                height="500">
+            </svg>
         </div>
-    </div>
 
-    <div class="overlay"></div>
+    </div>
 
 
     <!-- d3.js -->
@@ -165,11 +142,14 @@
     <script src="https://unpkg.com/topojson@3"></script>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
     <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
     <!-- jQuery Custom Scroller CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <!-- Angular JS -->
@@ -177,6 +157,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script> -->
     <!-- self-defined js files -->
     <script src="../../../javascripts/history.js"></script>
+    <!-- <script src="../../../javascripts/test.js"></script> -->
 
     <script type="text/javascript">
         $(document).ready(function () {

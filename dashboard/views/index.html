@@ -9,44 +9,46 @@
     <title>ANS Dashboard</title>
 
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="stylesheets/style.css">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
     <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
 
     <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
     <style type="text/css">
         /* 13. Basic Styling with CSS */
-        
+
         /* Style the lines by removing the fill and applying a stroke */
         .line {
             fill: none;
             stroke: #529ec2;
             stroke-width: 3;
         }
-          
+
         .overlay {
-          fill: none;
-          pointer-events: all;
+            fill: none;
+            pointer-events: all;
         }
-        
+
         /* Style the dots by assigning a fill and stroke */
         .dot {
             fill: #529fc29f;
             stroke: #fff;
         }
-          
+
         .focus circle {
-          fill: none;
-          stroke: steelblue;
+            fill: none;
+            stroke: steelblue;
         }
-        
-        </style>
+    </style>
     <style>
         .chart-line {
             fill: none;
@@ -58,88 +60,33 @@
 
 <body>
 
-    <div class="wrapper">
-        <!-- Sidebar  -->
-        <nav id="sidebar">
-            <div id="dismiss">
-                <i class="fas fa-arrow-left"></i>
-            </div>
+    <!-- Page Content  -->
+    <div id="content">
 
-            <div class="sidebar-header">
-                <h3>ANS</h3>
-            </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky">
+            <div class="container-fluid">
 
-            <ul class="list-unstyled components">
-                <p>Dashboard</p>
-                <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Home</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="#">Home 1</a>
+                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <i class="fas fa-align-left"></i>
+                    <span></span>
+                </button>
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index">&nbsp; ANS Community</a>
+                </div>
+
+                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <i class="fas fa-align-justify"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a href="./index" class="nav-link">Dashboard</a>
                         </li>
-                        <li>
-                            <a href="#">Home 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 3</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Mesh</a>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Features</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a href="latency.html">Latency</a>
-                        </li>
-                        <li>
-                            <a href="products.html">Products Received</a>
-                        </li>
-                        <li>
-                            <a href="#">Page 3</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-            </ul>
-
-            <ul class="list-unstyled CTAs">
-                <li>
-                    <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
-                </li>
-                <li>
-                    <a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Page Content  -->
-        <div id="content">
-
-            <nav class="navbar navbar-expand-lg navbar-light bg-light sticky">
-                <div class="container-fluid">
-
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span></span>
-                    </button>
-
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="./index">&nbsp;  ANS Community</a>
-                    </div>
-
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item active">
-                                <a href="./index" class="nav-link">Dashboard</a>
-                            </li>
-                            <!-- <li class="nav-item dropdown">
+                        <!-- <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Mesh Dash &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 </a>
@@ -148,89 +95,78 @@
                                     <a href="#" class="dropdown-item">Throughput</a>
                                 </div>
                             </li> -->
-                            <li class="nav-item">
-                                <a href="https://pages.shanti.virginia.edu/ANS_Community/" class="nav-link">Community</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">About</a>
-                            </li>
-                        </ul>
-                    </div>
+                        <li class="nav-item">
+                            <a href="https://pages.shanti.virginia.edu/ANS_Community/" class="nav-link">Community</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">About</a>
+                        </li>
+                    </ul>
                 </div>
-            </nav>
+            </div>
+        </nav>
 
-            <div class="container" ng-app="">
-                <div class="container-fluid" style="width: 50%; float: right; text-align: right">
-                    <p>
-                        Feed Type:
-                        <select id="feedtype">
-                            <option value="NGRID" selected="selected">NGRID</option>
-                            <option value=" ">OTHERS</option>
-                        </select>
-                    </p>
-                    
-                    <p>
-                        <!-- Choose throughput or received products. -->
-                        <input type="radio" name="data-type" value="throughput" checked>
-                        <span>Throughput &emsp;</span>
-                        <input type="radio" name="data-type" value="ffdrSize">
-                        <span>ffdrSize &emsp;</span>
-                        <input type="radio" name="data-type" value="ffdrProd">
-                        <span>ffdrProd </span>
-                    </p>
-                </div>
+        <div class="container" ng-app="">
+            <div class="container-fluid" style="width: 50%; float: right; text-align: right">
+                <p>
+                    Feed Type:
+                    <select id="feedtype">
+                        <option value="NGRID" selected="selected">NGRID</option>
+                        <option value=" ">OTHERS</option>
+                    </select>
+                </p>
 
-                <h2>Overwiew</h2>
-                <p id="currDate"></p>
-                <div class="chart-container" style="align-content: center">
-                    <svg 
-                        version="1.1"
-                        baseProfile="full"
-                        xmlns="http://www.w3.org/2000/svg" 
-                        id="map">
-                    </svg>
-                </div>
+                <p>
+                    <!-- Choose throughput or received products. -->
+                    <input type="radio" name="data-type" value="throughput" checked>
+                    <span>Throughput &emsp;</span>
+                    <input type="radio" name="data-type" value="ffdrSize">
+                    <span>ffdrSize &emsp;</span>
+                    <input type="radio" name="data-type" value="ffdrProd">
+                    <span>ffdrProd </span>
+                </p>
+            </div>
 
-                <div style="width: 160px; float: right; text-align: left;" >
-                    <span style="color: darkkhaki"> ● </span>
-                    <span> Less Active Hosts</span> <br/>
-                    <span style="color: brown"> ● </span>
-                    <span> Unavailable Hosts</span>
-                </div>
+            <h2>Overwiew</h2>
+            <p id="currDate"></p>
+            <div class="chart-container" style="align-content: center">
+                <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" id="map">
+                </svg>
+            </div>
 
-                <div class="dividing-line"></div>
+            <div style="width: 160px; float: right; text-align: left;">
+                <span style="color: darkkhaki"> ● </span>
+                <span> Less Active Hosts</span> <br />
+                <span style="color: brown"> ● </span>
+                <span> Unavailable Hosts</span>
+            </div>
 
-                <!-- linechart -->
-                <div>
-                    <h2 style="text-align:center;" id="linechart-title"></h2>
-                </div>
+            <div class="dividing-line"></div>
 
-                <div class="chart-container">
-                    <svg 
-                        version="1.1"
-                        baseProfile="full"
-                        xmlns="http://www.w3.org/2000/svg" 
-                        id="bar-chart">
-                    </svg>
-                    <!-- <svg 
+            <!-- linechart -->
+            <div>
+                <h2 style="text-align:center;" id="linechart-title"></h2>
+            </div>
+
+            <div class="chart-container">
+                <svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" id="bar-chart">
+                </svg>
+                <!-- <svg 
                         version="1.1"
                         baseProfile="full"
                         xmlns="http://www.w3.org/2000/svg" 
                         id="line-chart">
                     </svg> -->
-                    
-                    <div style="text-align:right">
-                        <button onclick="custom()" id="custombtn" class="btn btn-dark"> Custom </button>
-                        <!-- <input type="submit" value="custom" id="custom"/> -->
-                    </div>
-                </div>
 
-                <div class="tooltip"></div>
+                <div style="text-align:right">
+                    <button onclick="custom()" id="custombtn" class="btn btn-dark"> Custom </button>
+                    <!-- <input type="submit" value="custom" id="custom"/> -->
+                </div>
             </div>
+
+            <div class="tooltip"></div>
         </div>
     </div>
-
-    <div class="overlay"></div>
 
 
     <!-- d3.js -->
@@ -240,11 +176,14 @@
     <script src="https://unpkg.com/topojson@3"></script>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
     <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
     <!-- jQuery Custom Scroller CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <!-- Angular JS -->

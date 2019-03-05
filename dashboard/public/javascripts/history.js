@@ -135,51 +135,8 @@ function drawScalable(data, dateExtent) {
         var startTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[0].toISOString();
         var endTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[1].toISOString();
 
-        var updateURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+startTime+"&endTime="+endTime;
-        d3.json(updateURL, function(rowData) {
-            const dateExtent = [data.earliest, data.latest];
-
-            // re-draw line
-            data = rowData.data;
-            // console.log(data);
-            // console.log(new Date(data[0].time));
-            // console.log(d3.extent(data, d => new Date(d.time)));
-            xScale = d3.time.scale()
-                .domain(d3.extent(data, function(d) { // input
-                    return new Date(d.time);
-                }))
-                .range([0, width]); // view
-                // .nice();
-            
-            yScale = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.data)])
-                .range([height, 0]);
-                // .nice();
-
-            chart.select(".x.axis")
-                .transition()
-                    .duration(800)
-                // .call(xAxis.scale(new_xScale));
-                .call(xAxis.scale(xScale));
-
-            chart.select(".y.axis")
-                .transition()
-                    .duration(800)
-                // .call(yAxis.scale(new_yScale));
-                .call(yAxis.scale(yScale));
-    
-            plotLine = d3.line()
-                // .curve(d3.curveMonotoneX)
-                .x(function (d) { 
-                    return xScale(new Date(d.time));})
-                // .y(function (d) { return new_yScale(d.data); });
-                .y(function (d) { return yScale(d.data); });
-            
-            line.datum(data)
-                .attr("d", plotLine);
-
-            chart.call(zoom);
-        });
+        updateCustom(startTime, endTime);
+        updateData(startTime, endTime);
     }
 
     /****************** Periodically Update Below **************************/
@@ -213,16 +170,55 @@ function drawScalable(data, dateExtent) {
                 var startTime = d3.time.day.offset(endTime, -1);
             } else if (range === "1w") {
                 var startTime = d3.time.day.offset(endTime, -7);
-            } else if (range === "1m") {
+            } else if (range === "1mon") {
                 var startTime = d3.time.month.offset(endTime, -1);
-            } else if (range === "3m") {
+            } else if (range === "3mon") {
                 var startTime = d3.time.month.offset(endTime, -3);
+            } else if (range === "custom") {
+                document.getElementById("customTable").hidden = !document.getElementById("customTable").hidden;
             } else {
                 var startTime = d3.time.hour.offset(endTime, -6);
             }
-
             updateData(startTime, endTime);
         });
+
+    d3.select('#enter').on("click", () => {
+        if (document.getElementById("startDate").value) {
+            var startTime = new Date(document.getElementById("startDate").value).toISOString();
+            if (document.getElementById("endDate").value) {
+                var endTime = new Date(document.getElementById("endDate").value).toISOString();
+                if (startTime > dateExtent[1] || endTime < dateExtent[0]) {
+                    alert("Data Availbale from " + dateExtent[0].substr(0,10) + " to " + dateExtent[1].substr(0,10));
+                    startTime = endTime = null;
+                } else {
+                    if (startTime < dateExtent[0]) {
+                        d3.select('#startWarning').node().innerHTML = "The earliest data available on ";
+                        startTime = dateExtent[0];
+                    } else {
+                        d3.select('#startWarning').node().innerHTML = "";
+                    }
+                    if (endTime > dateExtent[1]) {
+                        d3.select('#endWarning').node().innerHTML = "The latest data available on ";
+                        endTime = dateExtent[1];
+                    } else {
+                        d3.select('#endWarning').node().innerHTML = "";
+                    }
+                }
+            } else {
+                alert("Input End Date");
+            }
+        } else {
+            alert("Input Start Date");
+        }
+        
+        if (startTime && endTime) {
+            updateData(startTime, endTime);
+        }
+    });
+
+    d3.select('#hide').on("click", () => {
+        document.getElementById("customTable").hidden = true;
+    });
 
     function updateData(startTime, endTime) {
         var updateURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+startTime+"&endTime="+endTime;
@@ -268,6 +264,18 @@ function drawScalable(data, dateExtent) {
                 .attr("d", plotLine);
 
             chart.call(zoom);
+
+            if ((d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[0])) {
+                var st = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[0].toISOString();
+            }
+            // var startTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[0].toISOString();
+            if ((d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[1])) {
+                var et = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[1].toISOString();
+            }
+            // var endTime = d3.extent(xAxis.scale().ticks(xAxis.ticks()[0]))[1].toISOString();
+            if (st && et) {
+                updateCustom(st, et);
+            }
         });
     }
 }
@@ -279,6 +287,16 @@ document
     = formatDataType(datatype)
     + " from UCAR to " + hostname.toUpperCase();
 
+function updateCustom(startTime, endTime) {
+    var sd = startTime.substr(0, 10);
+    var st = startTime.substr(11, 8);
+    var ed = endTime.substr(0, 10);
+    var et = endTime.substr(11, 8);
+    d3.select('#startDate').property('value', sd);
+    d3.select('#startTime').property('value', st);
+    d3.select('#endDate').property('value', ed);
+    d3.select('#endTime').property('value', et);
+}
 
 function formatDataType(key) {
     if (key === "ffdrProd") {
