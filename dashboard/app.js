@@ -10,7 +10,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var hourStatRouter = require('./routes/hourStat');
-var historyRouter = require('./routes/history');
+// var historyRouter = require('./routes/history');
 var hostDataRouter = require('./routes/hostData');
 
 var app = express();
@@ -18,7 +18,7 @@ var app = express();
 //Set up mongoose connection
 var mongoose = require('mongoose');
 var mongoDB = 'mongodb://localhost:27017/dashboard'
-mongoose.connect(mongoDB);
+mongoose.connect(mongoDB, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/hourStat', hourStatRouter);
-app.use('/history', historyRouter);
+// app.use('/history', historyRouter);
 app.use('/hostData', hostDataRouter);
 
 // catch 404 and forward to error handler

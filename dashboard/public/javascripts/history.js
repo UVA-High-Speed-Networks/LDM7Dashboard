@@ -7,7 +7,7 @@ const datatype = currURL.split('/')[currURLsize-2];
 
 var initEndTime = new Date();
 var initStartTime = d3.time.hour.offset(initEndTime, -3);
-var dataURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+initStartTime+"&endTime="+initEndTime;
+var dataURL = "/hostData?hostname="+hostname+"&feedtype="+feedtype+"&datatype="+datatype+"&startTime="+initStartTime+"&endTime="+initEndTime;
 // var dataURL = "/hostData?hostname=uva&feedtype=NGRID&datatype=throughput";
 d3.json(dataURL, function(data) {
     const dateExtent = [data.earliest, data.latest];
@@ -221,7 +221,7 @@ function drawScalable(data, dateExtent) {
     });
 
     function updateData(startTime, endTime) {
-        var updateURL = "/hostData?hostname="+hostname+"&feedtype=NGRID&datatype="+datatype+"&startTime="+startTime+"&endTime="+endTime;
+        var updateURL = "/hostData?hostname="+hostname+"&feedtype="+feedtype+"&datatype="+datatype+"&startTime="+startTime+"&endTime="+endTime;
         d3.json(updateURL, function(rowData) {
 
         const dateExtent = [data.earliest, data.latest];
@@ -285,6 +285,7 @@ document
     .getElementById("title")
     .innerHTML 
     = formatDataType(datatype)
+    +" of " + feedtype.toUpperCase()
     + " from UCAR to " + hostname.toUpperCase();
 
 function updateCustom(startTime, endTime) {
@@ -299,11 +300,13 @@ function updateCustom(startTime, endTime) {
 }
 
 function formatDataType(key) {
-    if (key === "ffdrProd") {
-      return "FFDR of Product";
-    } else if (key === "ffdrSize") {
-      return "FFDR of Size";
-    } else {
-      return key[0].toUpperCase() + key.slice(1).replace(/[A-Z]/g, c => " " + c);
+    switch (key) {
+      case "ffdrProd": return  "FFDR of Product";
+      case "ffdrSize": return "FFDR of Size";
+      case "avgThru": return "Average Throughput";
+      case "minThru": return "Minimum Throughput";
+      case "maxLatencyThru": return "Throughput with Max Latency";
+      case "percentile80Thru": return "Throughput of 80th percentile";
+      case "negativeLatencyNum": return "Number of Negative Latency";
     }
-}
+  }

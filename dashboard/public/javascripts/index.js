@@ -9,9 +9,14 @@ d3.queue()
       data = [];
     }
     
+    console.log(data);
+    
     var currFeedType = d3.select("#feedtype").node().value;
-    var currentDataType = d3.select('input[name="data-type"]:checked')
-                            .attr("value");
+    // var currDataType = d3.select('input[name="data-type"]:checked')
+    //                         .attr("value");
+    var currDataType = d3.select("#datatype").node().value;
+    // setDatatypeTooltip(currDataType);
+
     var geoData = topojson.feature(mapData, mapData.objects.states).features
 
     var width = +d3.select(".chart-container")
@@ -21,29 +26,32 @@ d3.queue()
     createMap(width, width * 3 / 5);
     // createLine(width, height);
     createBar(width, height);
-    drawMap(geoData, hosts, data, currFeedType, currentDataType);
+    drawMap(geoData, hosts, data, currFeedType, currDataType);
 
     d3.select("#feedtype")
         .on("change", () => {
-          var currFeedType = d3.select("#feedtype").node().value;
+          currFeedType = d3.select("#feedtype").node().value;
           var active = d3.select(".activeHost").data()[0];
           var host = active ? active.name : "";
-          drawMap(geoData, hosts, data, currFeedType, currentDataType);
+          drawMap(geoData, hosts, data, currFeedType, currDataType);
           if (host !== "") {
-            // drawLine(data, currFeedType, host, currentDataType);
-            drawBar(data, currFeedType, host, currentDataType);
+            // drawLine(data, currFeedType, host, currDataType);
+            drawBar(data, currFeedType, host, currDataType);
           }
         });
 
-    d3.selectAll('input[name="data-type"]')
+    // d3.selectAll('input[name="data-type"]')
+    d3.select("#datatype")
         .on("change", () => {
+          // currDataType = d3.event.target.value;
+          currDataType = d3.select("#datatype").node().value;
+          // setDatatypeTooltip(currDataType);
           var active = d3.select(".activeHost").data()[0];
           var host = active ? active.name : "";
-          currentDataType = d3.event.target.value;
-          drawMap(geoData, hosts, data, currFeedType, currentDataType);
+          drawMap(geoData, hosts, data, currFeedType, currDataType);
           if (host !== "") {
-            // drawLine(data, currFeedType, host, currentDataType);
-            drawBar(data, currFeedType, host, currentDataType);
+            // drawLine(data, currFeedType, host, currDataType);
+            drawBar(data, currFeedType, host, currDataType);
           }
         });
     
@@ -55,14 +63,16 @@ d3.queue()
     }, 2 * 60 * 1000);
       
     function updateData() {
-      d3.json("/hourStat?feedtype=NGRID", function(error, data) {
+      d3.json("/hourStat", function(error, data) {
         // Scale the range of the data again 
         console.log("Map refreshed");
         var active = d3.select(".activeHost").data()[0];
         var host = active ? active.name : "";
-        drawMap(geoData, hosts, data, currFeedType, currentDataType);
-        // drawLine(data, currFeedType, host, currentDataType);
-        drawBar(data, currFeedType, host, currentDataType);
+        drawMap(geoData, hosts, data, currFeedType, currDataType);
+        // drawLine(data, currFeedType, host, currDataType);
+        if (host != "") {
+          drawBar(data, currFeedType, host, currDataType);
+        }
       });
     }
 
@@ -72,16 +82,31 @@ d3.queue()
 
     // tooltip update
     function updateTooltip() {
-      var tooltip = d3.select(".tooltip");
+      var tooltip = d3.select(".dataTooltip");
       var tgt = d3.select(d3.event.target);
       var isLink = tgt.classed("link");
       var isNode = tgt.classed("node");
       var isBar = tgt.classed("bar");
+      // var isDatatype = tgt.node().id === "datatype";
+      // console.log(isDatatype);
       // var isDot = tgt.classed("dot");
-      var dataType = d3.select("input:checked")
-                       .property("value");
+      // var dataType = d3.select("input:checked")
+      //                  .property("value");
       var hostName = d3.selectAll(".link");
-      var units = dataType === "throughput" ? "bps" : "%";
+      var units = "";
+      // if (currDataType === "aggregatedDelay") {
+      //   units = "s";
+      // } 
+      if (currDataType === "ffdrProd" || currDataType === "ffdrSize") {
+        units = "%";
+      } 
+      // if (currDataType === "maxLatencyThru" || currDataType === "percentile80Thru") {
+      //   units = "bps";
+      // } 
+      else {
+        units = "bps";
+      }
+      
       tooltip
           .style("opacity", +(isLink || isNode || isBar))
           .style("left", (d3.event.pageX - tooltip.node().offsetWidth / 2 - 20) + "px")
@@ -101,8 +126,22 @@ d3.queue()
         var data = tgt.data()[0];
         if (data) {
           var hostName = data["name"] ? data["name"].toLocaleString() : "";
-          var thruValue = data.throughput ?
-                          d3.format(".3s")(+data.throughput) + " " + "bps" :
+          // var thrus = ["avgThru", "minThru", "maxLatencyThru", "percentile80Thru"];
+          // var ffdrs = ["ffdrSize", "ffdrProd"];
+          // var thruValue = function(thru) { 
+          //   return data[thru] ? d3.format(".3s")(+data[thru]) + " " + "bps" : "Data Not Available";
+          // };
+          var avgThruValue = data.avgThru ?
+                          d3.format(".3s")(+data.avgThru) + " " + "bps" :
+                          "Data Not Available";
+          var minThruValue = data.minThru ?
+                          d3.format(".3s")(+data.minThru) + " " + "bps" :
+                          "Data Not Available";
+          var maxLatencyThruValue = data.maxLatencyThru ?
+                          d3.format(".3s")(+data.maxLatencyThru) + " " + "bps" :
+                          "Data Not Available";
+          var percentileThruValue = data.percentile80Thru ?
+                          d3.format(".3s")(+data.percentile80Thru) + " " + "bps" :
                           "Data Not Available";
           var ffdrSizeValue = data.ffdrSize ?
                           data.ffdrSize.toLocaleString() + " " + "%" :
@@ -112,22 +151,57 @@ d3.queue()
                           "Data Not Available";
           tooltip.html(
                     ` <p>UCAR to ${hostName.toUpperCase()}</p>
-                      <p>Throughput: ${thruValue}</p>
+                      <p>Average Throughput: ${avgThruValue}</p>
+                      <p>Minimum Throughput: ${minThruValue}</p>
+                      <p>Throughput with max Latency: ${maxLatencyThruValue}</p>
+                      <p>Throughput of 80th percentile: ${percentileThruValue}</p>
                       <p>FFDR of Size: ${ffdrSizeValue}</p>
                       <p>FFDR of Product: ${ffdrProdValue}</p>
+                      <p>Ratio of Negative Latency: ${data.negativeLatencyRatio} %</p>
                     `)
         }
       }
       if (isBar) {
         var data = tgt.data()[0];
+        // if (data) {
+        //   // var hostName = data["name"] ? data["name"].toLocaleString() : "";
+        //   var dataValue = data[currDataType] ?
+        //                   data[currDataType].toLocaleString() + " " + units :
+        //                   "Data Not Available";
+        //   tooltip.html(
+        //             ` <p>Time: ${formatDate(data["time"])}</p>
+        //               <p>${formatDataType(currDataType)}: ${dataValue}</p>
+        //             `)
+        // }
         if (data) {
-          // var hostName = data["name"] ? data["name"].toLocaleString() : "";
-          var dataValue = data[dataType] ?
-                          data[dataType].toLocaleString() + " " + units :
+          var hostName = data["name"] ? data["name"].toLocaleString() : "";
+          var avgThruValue = data.avgThru ?
+                          d3.format(".3s")(+data.avgThru) + " " + "bps" :
+                          "Data Not Available";
+          var minThruValue = data.minThru ?
+                          d3.format(".3s")(+data.minThru) + " " + "bps" :
+                          "Data Not Available";
+          var maxLatencyThruValue = data.maxLatencyThru ?
+                          d3.format(".3s")(+data.maxLatencyThru) + " " + "bps" :
+                          "Data Not Available";
+          var percentileThruValue = data.percentile80Thru ?
+                          d3.format(".3s")(+data.percentile80Thru) + " " + "bps" :
+                          "Data Not Available";
+          var ffdrSizeValue = data.ffdrSize ?
+                          data.ffdrSize.toLocaleString() + " " + "%" :
+                          "Data Not Available";
+          var ffdrProdValue = data.ffdrProd ?
+                          data.ffdrProd.toLocaleString() + " " + "%" :
                           "Data Not Available";
           tooltip.html(
                     ` <p>Time: ${formatDate(data["time"])}</p>
-                      <p>${formatDataType(dataType)}: ${dataValue}</p>
+                      <p>Average Throughput: ${avgThruValue}</p>
+                      <p>Minimum Throughput: ${minThruValue}</p>
+                      <p>Throughput with max Latency: ${maxLatencyThruValue}</p>
+                      <p>Throughput of 80th percentile: ${percentileThruValue}</p>
+                      <p>FFDR of Size: ${ffdrSizeValue}</p>
+                      <p>FFDR of Product: ${ffdrProdValue}</p>
+                      <p>Ratio of Negative Latency: ${data.negativeLatencyRatio} %</p>
                     `)
         }
       }
@@ -138,7 +212,8 @@ currDateDisplay();
 
 function currDateDisplay() {
   var currDate = new Date();
-  document.getElementById("currDate").innerHTML = "of one hour transmission until " + formatDate(currDate);  
+  document.getElementById("currDate").innerHTML = "for last one hour " ;
+  // + formatDate(currDate);  
 }
 
 
@@ -148,17 +223,15 @@ function formatDate(date) {
 }
 
 function formatDataType(key) {
-  if (key === "ffdrProd") {
-    return "FFDR of Product";
-  } else if (key === "ffdrSize") {
-    return "FFDR of Size";
-  } else {
-    return key[0].toUpperCase() + key.slice(1).replace(/[A-Z]/g, c => " " + c);
+  switch (key) {
+    case "ffdrProd": return  "FFDR of Product";
+    case "ffdrSize": return "FFDR of Size";
+    case "avgThru": return "Average Throughput";
+    case "minThru": return "Minimum Throughput";
+    case "maxLatencyThru": return "Throughput with Max Latency";
+    case "percentile80Thru": return "Throughput of 80th percentile";
+    case "negativeLatencyNum": return "Number of Negative Latency";
   }
-  
-  // var name = key.replace(/[A-Z]/g, c => " " + c);
-  // console.log(name);
-  // return name
 }
 
 function hostStatus(hostData) {
@@ -167,15 +240,33 @@ function hostStatus(hostData) {
 }
 
 function custom() {
-  var dataType = d3.select("input:checked")
-                       .property("value");
   // console.log(dataType);
   var active = d3.select(".activeHost").data()[0];
-          // console.log("active:" + active.name);
-          var host = active ? active.name : "";
+  // console.log("active:" + active.name);
+  var host = active ? active.name : "";
   // console.log(host);
-  var url = "./NGRID/" + host.toLocaleString() + "/" + dataType + "/";
+  var feedtype = d3.select("#feedtype").node().value;
+  var dataType = d3.select("#datatype").node().value;
+  var url = "./" + feedtype + "/" + host.toLocaleString() + "/" + dataType + "/";
   window.location.href = url;
 }
 
+// function setDatatypeTooltip(datatype) {
+//   var txt = "";
+//   switch (datatype) {
+//     case "ffdrProd": { txt = "FFDR of Product"; break; }
+//     case "ffdrSize": { txt = "FFDR of Size"; break; }
+//     case "avgThru": { txt = "Average Throughput"; break; }
+//     case "minThru": { txt = "Minimum Throughput"; break; }
+//     case "maxLatencyThru": { txt = "Throughput with Max Latency"; break; }
+//     case "percentile80Thru": { txt = "Throughput of 80th percentile"; break; }
+//   }
+//   // document.getElementById("datatype").setAttribute("title", txt);
+//   $('#datatype').tooltip('options', 'title', txt);
+// }
 
+// var txt = "Average Throughput: sum of received product size within 1h / sum of latency within 1h";
+// document.getElementById("datatype").setAttribute("title", txt);
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});

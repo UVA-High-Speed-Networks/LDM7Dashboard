@@ -18,10 +18,11 @@ function drawMap(geoData, hosts, data, feedType, dataType) {
   if (feedType === null) feedType = "";
 
   // set currentTime variable for future timestamp comparison
-  var currentTime = new Date();
+  // var currentTime = new Date();
+  var currentTime = new Date("2019-03-25T18:59:58Z");
 
   // filter out the invalid data
-  ldmData = data.filter(d => d.feedtype === feedType && d.throughput !== -1 && d.ffdrProd !== -1 && d.ffdrSize !== -1);
+  ldmData = data.filter(d => d.feedtype === feedType && d.ffdrProd !== -1 && d.ffdrSize !== -1);
 
   // get last reported timestamp of valid data for ucar node color setting
   var lastReportTime_all = d3.max(ldmData, d => d.time);
@@ -30,27 +31,46 @@ function drawMap(geoData, hosts, data, feedType, dataType) {
   var hostsData = [];
   for (var i = 0; i < hosts.length; i++) {
     var hostHourData = ldmData.filter(d => d.hostname === hosts[i].name);
+
     var sumReceivedSize = d3.sum(hostHourData, d => +d.receivedSize);
-    var sumReceivedDelay = d3.sum(hostHourData, d => +d.receivedDelay);
     var sumReceivedProd = d3.sum(hostHourData, d => +d.receivedProd);
     var sumCompleteSize = d3.sum(hostHourData, d => +d.completeSize);
     var sumCompleteProd = d3.sum(hostHourData, d => +d.completeProd);
-    var lastReportTime = d3.max(hostHourData, d => d.time);
+    var sumAggregatedLatency = d3.sum(hostHourData, d => +d.aggregatedLatency);
+    var sumNegativeLatencyNum = d3.sum(hostHourData, d => +d.negativeLatencyNum);
 
-    var throughput = sumReceivedSize / sumReceivedDelay;
+    // How to get the throughput of max latency
+    var maxLatency = d3.max(hostHourData, d => +d.maxLatency);
+    var maxLatencyThru;
+    hostHourData.forEach(line => {
+      if (line.maxLatency === maxLatency) {
+        maxLatencyThru = line.maxLatency;
+      }
+    });;
+    
     var ffdrSize = 100 * sumReceivedSize / sumCompleteSize;
     var ffdrProd = 100 * sumReceivedProd / sumCompleteProd;
+    var avgThru = 8 * sumReceivedSize / sumAggregatedLatency;
+    var lastReportTime = d3.max(hostHourData, d => d.time);
+    var minThru = d3.min(hostHourData, d => +d.minThru);
+    var meanPercentile80Thru = d3.mean(hostHourData, d => +d.percentile80Thru);
+    var negativeLatencyRatio = 100 * sumNegativeLatencyNum / sumCompleteProd;
     
-    if(isNaN(throughput)) throughput = -1;
     if(isNaN(ffdrSize)) ffdrSize = -1;
     if(isNaN(ffdrProd)) ffdrProd = -1;
     var dic = { "host": hosts[i].name,
-                "throughput": throughput,
+                "avgThru": avgThru,
+                "maxLatencyThru": maxLatencyThru,
+                "minThru": minThru,
+                "percentile80Thru": meanPercentile80Thru,
+                // "aggregatedLatency": sumAggregatedLatency,
                 "ffdrSize": ffdrSize,
                 "ffdrProd": ffdrProd,
-                "lastReportTime": lastReportTime};
+                "lastReportTime": lastReportTime,
+                "negativeLatencyRatio": negativeLatencyRatio};
     hostsData.push(dic);
   };
+  console.log("hostsData:", hostsData)
 
   var map = d3.select("#map");
 
@@ -80,14 +100,20 @@ function drawMap(geoData, hosts, data, feedType, dataType) {
       return row.name === item.host;
     });
     if (hostData) {
-      row.throughput = hostData.throughput;
+      row.maxLatencyThru = hostData.maxLatencyThru;
+      row.percentile80Thru = hostData.percentile80Thru;
+      row.avgThru = hostData.avgThru;
+      row.minThru = hostData.minThru;
       row.ffdrSize = hostData.ffdrSize;
       row.ffdrProd = hostData.ffdrProd;
       row.lastReportTime = hostData.lastReportTime;
+      row.negativeLatencyRatio = hostData.negativeLatencyRatio;
     } else {
-      row.throughput = -1;
-      row.ffdrSize = -1;
-      row.ffdrProd = -1;
+      // row.minThru = -1;
+      // row.percentileThru = -1;
+      // row.latency = -1;
+      // row.ffdrSize = -1;
+      // row.ffdrProd = -1;
       row.lastReportTime = undefined;
     }
     return row;
@@ -95,8 +121,11 @@ function drawMap(geoData, hosts, data, feedType, dataType) {
 
   // filter out invalid data from hosts 
   // to draw links from sending host (ucar) to receiving hosts
-  var availableHosts = hosts.filter(d => d.throughput !== -1 || d.ffdrProd !== -1 || d.ffdrSize !== -1);
-  
+  // var availableHosts = hosts.filter(d => d.throughput !== -1 || d.ffdrProd !== -1 || d.ffdrSize !== -1);
+  var availableHosts = hosts.filter(d => d.lastReportTime != undefined);
+
+  console.log(hosts);
+
   map.selectAll('.states')
     .data(geoData)
     .enter()
@@ -122,13 +151,14 @@ function drawMap(geoData, hosts, data, feedType, dataType) {
     .attr('x2', d => projection([d.lng, d.lat])[0])
     .attr('y2', d => projection([d.lng, d.lat])[1])
     .on('click', function() {
-      var currentDataType = d3.select('input[name="data-type"]:checked')
-                              .attr("value");
+      // var currDataType = d3.select('input[name="data-type"]:checked')
+      //                         .attr("value");
+      var currDataType = d3.select("#datatype").node().value;
       var host = d3.select(this);
       var isActive = host.classed("active");
       var hostName = isActive ? "" : host.data()[0].name;
-      // drawLine(ldmData, feedType, hostName, currentDataType);
-      drawBar(ldmData, feedType, hostName, currentDataType);
+      // drawLine(ldmData, feedType, hostName, currDataType);
+      drawBar(ldmData, feedType, hostName, currDataType);
       d3.selectAll(".link").classed("activeHost", false);
       host.classed("activeHost", !isActive);
       d3.select("#bar-chart").node().scrollIntoView();

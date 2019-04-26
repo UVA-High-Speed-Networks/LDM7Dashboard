@@ -112,18 +112,37 @@
                     Feed Type:
                     <select id="feedtype">
                         <option value="NGRID" selected="selected">NGRID</option>
-                        <option value=" ">OTHERS</option>
+                        <option value="HDS">HDS</option>
+                        <option value="CONDUIT">CONDUIT</option>
+                        <option value="DIFAX">DIFAX</option>
+                        <option value="FNEXRAD">FNEXRAD</option>
+                        <option value="FSL2">FSL2</option>
+                        <option value="FSL3">FSL3</option>
+                        <option value="GPS">GPS</option>
+                        <option value="IDS|DDPLUS">IDS|DDPLUS</option>
+                        <option value="LIGHTNING">LIGHTNING</option>
+                        <option value="NEXRAD3">NEXRAD3</option>
+                        <option value="NIMAGE">NIMAGE</option>
+                        <option value="PCWS">PCWS</option>
+                        <option value="UNIWISC">UNIWISC</option>
                     </select>
                 </p>
 
                 <p>
                     <!-- Choose throughput or received products. -->
-                    <input type="radio" name="data-type" value="throughput" checked>
-                    <span>Throughput &emsp;</span>
-                    <input type="radio" name="data-type" value="ffdrSize">
-                    <span>ffdrSize &emsp;</span>
-                    <input type="radio" name="data-type" value="ffdrProd">
-                    <span>ffdrProd </span>
+                    Data Type:
+                    <!-- <select id="datatype" data-toggle="tooltip" data-placement="bottom" title=""> -->
+                    <select id="datatype">
+                        <option value="avgThru" data-toggle="tooltip" data-placement="bottom" data-original-title="avg" selected="selected">Average Throughput</option>
+<!-- <span data-toggle="tooltip" title="The latest data is received more than 30 minutes ago."> Less Active Hosts</span> -->
+                        <option value="minThru" data-toggle="tooltip" data-placement="bottom" data-original-title="min">Minimum Throughput</option>
+                        <option value="maxLatencyThru" data-toggle="tooltip" data-placement="bottom" data-original-title="max">Throughput with Max Latency</option>
+                        <option value="percentile80Thru" data-toggle="tooltip" data-placement="bottom" data-original-title="80th">Throughput of 80th percentile</option>
+                        <option value="ffdrSize" data-toggle="tooltip" data-placement="bottom" data-original-title="ffdrSize">FFDR of Product Size</option>
+                        <option value="ffdrProd" data-toggle="tooltip" data-placement="bottom" data-original-title="ffdrProd">FFDR of Product Number</option>
+                        <option value="negativeLatencyRatio">Ratio of Negative Latency</option>
+                        <!-- <option value="aggregatedDelay">Aggregated Latency</option> -->
+                    </select>
                 </p>
             </div>
 
@@ -136,7 +155,7 @@
 
             <div style="width: 160px; float: right; text-align: left;">
                 <span style="color: darkkhaki"> ● </span>
-                <span> Less Active Hosts</span> <br />
+                <span data-toggle="tooltip" title="The latest data is received more than 30 minutes ago."> Less Active Hosts</span> <br/>
                 <span style="color: brown"> ● </span>
                 <span> Unavailable Hosts</span>
             </div>
@@ -145,7 +164,7 @@
 
             <!-- linechart -->
             <div>
-                <h2 style="text-align:center;" id="linechart-title"></h2>
+                <h2 style="text-align:center;" id="barchart-title"></h2>
             </div>
 
             <div class="chart-container">
@@ -164,7 +183,7 @@
                 </div>
             </div>
 
-            <div class="tooltip"></div>
+            <div class="dataTooltip"></div>
         </div>
     </div>
 
@@ -184,8 +203,6 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
         crossorigin="anonymous"></script>
-    <!-- jQuery Custom Scroller CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
     <!-- Angular JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
@@ -194,26 +211,6 @@
     <script src="javascripts/map.js"></script>
     <script src="javascripts/bar.js"></script>
     <!-- <script src="javascripts/line.js"></script> -->
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#sidebar").mCustomScrollbar({
-                theme: "minimal"
-            });
-
-            $('#dismiss, .overlay').on('click', function () {
-                $('#sidebar').removeClass('active');
-                $('.overlay').removeClass('active');
-            });
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').addClass('active');
-                $('.overlay').addClass('active');
-                $('.collapse.in').toggleClass('in');
-                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-            });
-        });
-    </script>
 </body>
 
 </html>

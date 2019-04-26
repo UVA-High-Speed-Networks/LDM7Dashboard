@@ -78,7 +78,7 @@ a:focus {
     font-family: 'Times New Roman', cursive;
 }
 
-.tooltip {
+.dataTooltip {
   opacity: 0;
   position: absolute;
   pointer-events: none;
@@ -88,12 +88,12 @@ a:focus {
   border-radius: 6px;
 }
 
-.tooltip p {
+.dataTooltip p {
   margin: 2px;
   color: #000000;
 }
 
-.tooltip:after {
+.dataTooltip:after {
   content: ' ';
   position: absolute;
   left: 50%;
