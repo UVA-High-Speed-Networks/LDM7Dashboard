@@ -1,7 +1,7 @@
 # ldm-Dashboard
 
 A dashboard web app based on node.js, which displays the data transition statistic from UCAR to 10 campuses.
-Usd MongoDB as database to store the statistic data.
+MongoDB is used as database in this project to store the statistic data.
 
 ### Deploy In your Local Machine:
 
